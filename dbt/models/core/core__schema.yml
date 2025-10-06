@@ -1,0 +1,71 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension with first order timestamps."
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+      - name: first_order_ts
+        description: "NULL if customer has not ordered yet."
+      - name: state
+      - name: zip_prefix
+
+  - name: dim_products
+    description: "Product attributes."
+    columns:
+      - name: product_id
+        tests: [not_null, unique]
+      - name: category
+
+  - name: fct_order_items
+    description: "Line-level sales with order status flags."
+    columns:
+      - name: order_item_id
+        tests: [not_null, unique]
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: order_id
+      - name: qty
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "qty >= 1"
+      - name: unit_price
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "unit_price >= 0"
+      - name: discount_amount
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "discount_amount >= 0"
+      - name: line_net
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "line_net >= 0 OR discount_amount = 0"
+
+  - name: fct_orders
+    description: "Order-level aggregates and payment totals."
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: gmv
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "gmv >= 0"
+      - name: payment_total
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "payment_total >= 0"
+      - name: is_delivered
+        tests: [not_null]
+      - name: is_late
+        tests: [not_null]

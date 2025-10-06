@@ -1,0 +1,45 @@
+[sqlfluff]
+dialect = duckdb
+templater = dbt
+exclude_rules = L031,L034  # allow implicit aliasing & select wildcards in staging if needed
+max_line_length = 100
+verbosity = 0
+
+[sqlfluff:templater:dbt]
+project_dir = dbt
+profiles_dir = dbt
+
+[sqlfluff:rules]
+# Common readability rules
+L010 = true  # capitalization of keywords
+L014 = true  # unquoted identifiers
+L016 = true  # line length (soft)
+L018 = true  # commas at end of line
+L019 = true  # leading/trailing commas
+L022 = true  # select wildcards (enforced in marts)
+L029 = true  # keyword order
+L036 = true  # select targets one per line
+L039 = true  # qualified references
+
+[sqlfluff:rules:L010]
+capitalisation_policy = upper
+
+# Allow wildcards in staging only; enforce explicit columns elsewhere.
+[sqlfluff:rules:L022]
+forbid_subquery_wildcard = true
+force_enable = true
+
+[sqlfluff:rules:L006]
+max_line_length = 100
+
+# Jinja/dbt compatibility tweaks
+[sqlfluff:rules:Jinja]
+apply_dbt_builtins = true
+
+# Per-path overrides
+[sqlfluff:rules:L022:ignore]
+paths = dbt/models/staging/**
+
+[sqlfluff:indentation]
+indent_unit = space
+tab_space_size = 2

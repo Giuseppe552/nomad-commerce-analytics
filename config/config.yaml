@@ -1,0 +1,56 @@
+# ===== Nomad Commerce Analytics — central config =====
+app:
+  mode_env_var: MODE          # real | synth
+  secret_env_var: STREAMLIT_SECRET
+
+paths:
+  duckdb: ${DUCKDB_PATH:-warehouse/nomad.duckdb}
+  olist_dir: ${OLIST_DATA_DIR:-data/real}
+  synth_dir: ${SYNTH_DATA_DIR:-data/synth}
+  exports_dir: exports
+  artifacts_dir: artifacts
+
+ranges:
+  # Default analysis windows
+  lookback_days: 365
+  recent_days: 28
+  cohort_granularity: "month"
+
+thresholds:
+  # Delivery & reviews (real mode)
+  late_if_days_over_eta: 0
+  significant_delay_days: 3
+  min_orders_for_stat_tests: 1000
+
+  # Freight vs distance outlier detection
+  outlier_std_residual: 2.5
+  min_points_for_regression: 500
+
+  # KPI alerts
+  ontime_warn_pct: 85
+  review_warn_score: 3.8
+  freight_pct_warn: 0.20
+
+synthetic:
+  # Data generation scale
+  months: 18
+  orders: 50000
+  seed: 42
+  promo_spike_days_per_month: 2
+
+dbt:
+  # Passed to dbt via --vars
+  vars:
+    currency: "BRL"           # real mode default
+    mode: "{{ env_var('MODE', 'real') }}"
+  target: "dev"
+
+performance:
+  # SLOs used for CI smoke tests
+  max_full_build_seconds: 180
+  max_dashboard_first_paint_seconds: 1.5
+
+determinism:
+  kpi_table_candidates:
+    - mrt_kpis_daily_real
+    - mrt_kpis_daily_synth

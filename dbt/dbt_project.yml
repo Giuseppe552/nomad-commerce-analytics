@@ -1,0 +1,60 @@
+name: "nomad_commerce_analytics"
+version: "1.0"
+config-version: 2
+
+profile: "nomad_duckdb"   # matches profiles.yml
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: []
+analysis-paths: []
+test-paths: []
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  mode: "{{ env_var('MODE', 'real') }}"  # real | synth
+  currency: "BRL"
+
+models:
+  +materialized: view
+  +on_schema_change: append_new_columns
+  +persist_docs:
+    relation: true
+    columns: true
+
+  nomad_commerce_analytics:
+    staging:
+      +materialized: view
+      +tags: ["staging"]
+    core:
+      +materialized: table
+      +tags: ["core"]
+    real_world:
+      +materialized: table
+      +tags: ["real"]
+      +enabled: "{{ var('mode') == 'real' }}"
+    synth_world:
+      +materialized: table
+      +tags: ["synth"]
+      +enabled: "{{ var('mode') == 'synth' }}"
+    marts:
+      +materialized: table
+      +tags: ["mart"]
+
+seeds:
+  +column_types: {}
+  +quote_columns: false
+
+tests:
+  +store_failures: true
+  +severity: error
+
+dispatch:
+  - macro_namespace: dbt
+    search_order: ["dbt", "dbt_external_tables"]
+
+flags:
+  send_anonymous_usage_stats: false

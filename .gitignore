@@ -1,0 +1,56 @@
+# --- Python / venv
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.python-version
+.ipynb_checkpoints/
+
+# --- OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Logs / temp
+*.log
+artifacts/logs/
+artifacts/build_hash.txt
+
+# --- Data & warehouse
+warehouse/
+!warehouse/.gitkeep
+data/synth/
+!data/synth/.gitkeep
+data/real/*.zip
+data/real/*.parquet
+data/real/*.feather
+
+# --- App & site artifacts
+.site/
+site/
+exports/
+!exports/.gitkeep
+
+# --- dbt generated
+dbt/target/
+dbt/logs/
+
+# --- Secrets / env
+.env
+*.env
+.env.*.local
+
+# --- Coverage / test cache
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Streamlit
+.streamlit/
+
+data/real/*.csv

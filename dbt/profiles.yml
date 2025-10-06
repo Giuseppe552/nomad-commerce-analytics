@@ -1,0 +1,16 @@
+nomad_duckdb:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', 'warehouse/nomad.duckdb') }}"
+      threads: 4
+      schema: main
+      extensions:
+        - json
+        - httpfs
+      settings:
+        enable_object_cache: true
+        memory_limit: "2GB"
+      # Allow dbt to create the file if missing
+      create: true

@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: fct_deliveries
+    description: "Delivered orders with lead time and ETA gap."
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('fct_orders')
+              field: order_id
+      - name: lead_time_days
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "lead_time_days >= 0"
+      - name: is_late
+        tests: [not_null]
+
+  - name: fct_freight
+    description: "Line-level freight economics with distance and order-level aggregates."
+    columns:
+      - name: order_item_id
+        tests: [not_null, unique]
+      - name: distance_km
+        description: "Null if either customer or seller geos are missing."
+      - name: freight_pct_line
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "freight_pct_line is null OR (freight_pct_line >= 0 AND freight_pct_line < 10)"
+
+  - name: mrt_kpis_daily_real
+    description: "Daily KPIs for real-world data."
+    columns:
+      - name: kpi_date
+        tests: [not_null, unique]
+      - name: gmv
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "gmv >= 0"
+      - name: on_time_pct
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "on_time_pct between 0 and 1"
+
+  - name: mrt_reviews
+    description: "Review stats and estimated delay penalty per day."
+    columns:
+      - name: as_of_date
+        tests: [not_null, unique]
+      - name: delay_penalty
+        description: "Ontime_avg - Late_avg (positive means lateness reduces score)."

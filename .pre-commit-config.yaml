@@ -1,0 +1,56 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-added-large-files
+        args: ["--maxkb=5000"]
+
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        args: [--line-length=100]
+        language_version: python3
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.5
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 2.3.5
+    hooks:
+      - id: sqlfluff-lint
+        additional_dependencies: [sqlfluff-templater-dbt==2.3.5]
+        args: ["--dialect", "duckdb"]
+        files: ^dbt/.*\.(sql|yml)$
+      - id: sqlfluff-fix
+        additional_dependencies: [sqlfluff-templater-dbt==2.3.5]
+        args: ["--dialect", "duckdb"]
+        files: ^dbt/.*\.(sql|yml)$
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: |
+          (?x)^(
+            site/|
+            dbt/target/|
+            data/|
+            warehouse/
+          )
+
+ci:
+  autofix_commit_msg: "chore(pre-commit): auto-fixes by hooks"
+  autoupdate_branch: "main"
+  skip: [detect-secrets]  # CI may not have baseline; run locally
+
