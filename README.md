@@ -32,6 +32,8 @@ make ingest MODE=real           # load CSVs → DuckDB
 make dbt_build                  # build + test models
 make app                        # open Streamlit at localhost
 
+```
+
 Minimal run without full dataset (tiny sample):
 
 # Creates a minimal Olist-like subset so you can smoke-test locally
@@ -107,27 +109,27 @@ make ingest MODE=real && make dbt_build && make app
 
 Dataset
 
-    Source: Brazilian E-Commerce Public Dataset by Olist (orders, items, customers, payments, reviews, products, sellers, geolocation).
+Source: Brazilian E-Commerce Public Dataset by Olist (orders, items, customers, payments, reviews, products, sellers, geolocation).
 
-    Attribution: Olist / Kaggle. Use for analysis/education; raw data is not redistributed in this repo.
+Attribution: Olist / Kaggle. Use for analysis/education; raw data is not redistributed in this repo.
 
-    Placement: put the eight CSVs in data/real/ with the exact filenames:
+Placement: put the eight CSVs in data/real/ with the exact filenames:
 
-        olist_orders_dataset.csv
+olist_orders_dataset.csv
 
-        olist_order_items_dataset.csv
+olist_order_items_dataset.csv
 
-        olist_customers_dataset.csv
+olist_customers_dataset.csv
 
-        olist_order_payments_dataset.csv
+olist_order_payments_dataset.csv
 
-        olist_order_reviews_dataset.csv
+olist_order_reviews_dataset.csv
 
-        olist_products_dataset.csv
+olist_products_dataset.csv
 
-        olist_sellers_dataset.csv
+olist_sellers_dataset.csv
 
-        olist_geolocation_dataset.csv
+olist_geolocation_dataset.csv
 
 What the app shows
 Overview
