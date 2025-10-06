@@ -8,7 +8,8 @@ import pandas as pd
 import streamlit as st
 
 # On Streamlit Cloud, /mount/data is writable during the session
-DUCKDB_PATH = os.environ.get("DUCKDB_PATH", "/mount/data/nomad.duckdb")
+DUCKDB_PATH = st.secrets.get("DUCKDB_PATH", os.environ.get("DUCKDB_PATH", "/mount/data/nomad.duckdb"))
+
 
 @lru_cache(maxsize=1)
 def _connect() -> duckdb.DuckDBPyConnection:

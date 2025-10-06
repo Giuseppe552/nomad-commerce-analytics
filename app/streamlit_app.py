@@ -12,8 +12,8 @@ from app.utils.db import get_con, table_exists, query_df, ensure_demo_db
 ensure_demo_db()
 
 APP_TITLE = "Nomad Commerce Analytics"
-MODE = os.environ.get("MODE", "real")  # real | synth
-DUCKDB_PATH = os.environ.get("DUCKDB_PATH", "warehouse/nomad.duckdb")
+MODE = st.secrets.get("MODE", os.environ.get("MODE", "real"))
+DUCKDB_PATH = st.secrets.get("DUCKDB_PATH", os.environ.get("DUCKDB_PATH", "warehouse/nomad.duckdb"))
 
 st.set_page_config(page_title=APP_TITLE, layout="wide")
 
