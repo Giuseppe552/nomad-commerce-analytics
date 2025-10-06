@@ -95,3 +95,8 @@ where = ["."]
 exclude = ["site", "data", "warehouse", "artifacts", "exports"]
 
 
+[tool.poetry]
+name = "nomad-commerce-analytics"
+version = "0.1.0"
+description = "Real-world ecommerce analytics with DuckDB + dbt + Streamlit"
+package-mode = false        # 👈 prevent Poetry from trying to install the project itself
