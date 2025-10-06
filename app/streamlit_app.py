@@ -4,8 +4,12 @@ from pathlib import Path
 
 import streamlit as st
 
-from app.utils.db import get_con, table_exists, query_df
+
 from app.utils.glossary import KPI_TOOLTIPS
+from app.utils.db import get_con, table_exists, query_df, ensure_demo_db
+
+# ensure a tiny demo DB exists when running in the cloud
+ensure_demo_db()
 
 APP_TITLE = "Nomad Commerce Analytics"
 MODE = os.environ.get("MODE", "real")  # real | synth
